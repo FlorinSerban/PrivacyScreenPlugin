@@ -60,6 +60,11 @@ static UIImageView *imageView;
   
   int limit = MAX(mainScreenHeight,mainScreenWidth);
   
+  CGFloat mainScreenNativeHeight = mainScreen.nativeBounds.size.height;
+  CGFloat mainScreenNativeWidth = mainScreen.nativeBounds.size.width;
+  
+  int limitNative = MAX(mainScreenNativeHeight,mainScreenNativeWidth);
+
   device.iPad = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad);
   device.iPhone = (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone);
   device.retina = ([mainScreen scale] == 2.0);
@@ -71,6 +76,8 @@ static UIImageView *imageView;
   device.iPhone6 = (device.iPhone && limit == 667.0);
   device.iPhone6Plus = (device.iPhone && limit == 736.0);
   device.iPhoneX  = (device.iPhone && limit == 812.0);
+  device.iPhoneXSMax  = (device.iPhone && limitNative == 2688.0);
+  device.iPhoneXR  = (device.iPhone && limitNative == 1792.0);
   
   return device;
 }
@@ -101,13 +108,19 @@ static UIImageView *imageView;
       imageName = [imageName stringByAppendingString:@"-700"];
     } else if(device.iPhone6) {
       imageName = [imageName stringByAppendingString:@"-800"];
-    } else if(device.iPhone6Plus || device.iPhoneX) {
+    } else if(device.iPhone6Plus || device.iPhoneX || device.iPhoneXSMax || device.iPhoneXR) {
         if(device.iPhone6Plus) {
-            imageName = [imageName stringByAppendingString:@"-800"];
+          imageName = [imageName stringByAppendingString:@"-800"];
         } 
         if(device.iPhoneX) {
-            imageName = [imageName stringByAppendingString:@"-1100"];
+          imageName = [imageName stringByAppendingString:@"-1100"];
         } 
+        if(device.iPhoneXSMax) {
+          imageName = [imageName stringByAppendingString:@"-1200"];
+        }
+        if(device.iPhoneXR) {
+          imageName = [imageName stringByAppendingString:@"-1200"];
+        }
         if (currentOrientation == UIInterfaceOrientationPortrait || currentOrientation == UIInterfaceOrientationPortraitUpsideDown) {
           imageName = [imageName stringByAppendingString:@"-Portrait"];
         }
@@ -121,7 +134,7 @@ static UIImageView *imageView;
     imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-568h"];
   } else if (device.iPhone6) { // does not support landscape
     imageName = isLandscape ? nil : [imageName stringByAppendingString:@"-667h"];
-  } else if (device.iPhone6Plus || device.iPhoneX) { // supports landscape
+  } else if (device.iPhone6Plus || device.iPhoneX || device.iPhoneXSMax || device.iPhoneXR) { // supports landscape
     if (isOrientationLocked) {
       imageName = [imageName stringByAppendingString:(supportsLandscape ? @"-Landscape" : @"")];
     } else {
@@ -140,6 +153,12 @@ static UIImageView *imageView;
     }
     if (device.iPhoneX) {
         imageName = [imageName stringByAppendingString:@"-2436h"];
+    }
+    if (device.iPhoneXSMax) {
+        imageName = [imageName stringByAppendingString:@"-2688h"];
+    }
+    if (device.iPhoneXR) {
+        imageName = [imageName stringByAppendingString:@"-1792h"];
     }
     
   } else if (device.iPad) { // supports landscape
